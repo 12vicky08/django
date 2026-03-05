@@ -1,0 +1,31 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run at 00:00 UTC every day
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  daily-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Need write permission to push commits
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make Daily Change
+        run: |
+          date > daily_commit.txt
+          echo "Last daily commit on $(date)" >> daily_commit.txt
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add daily_commit.txt
+          git commit -m "chore: daily automated commit" || echo "No changes to commit"
+          git push
