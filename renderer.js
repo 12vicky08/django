@@ -205,16 +205,17 @@ function render() {
 // ---- Event Listeners ----
 
 // Add todo
-addBtn.addEventListener('click', () => {
+function handleAddTodo() {
   addTodo(todoInput.value);
   todoInput.value = '';
   todoInput.focus();
-});
+}
+
+addBtn.addEventListener('click', handleAddTodo);
 
 todoInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
-    addTodo(todoInput.value);
-    todoInput.value = '';
+    handleAddTodo();
   }
 });
 
