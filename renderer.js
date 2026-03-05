@@ -88,19 +88,6 @@ function clearCompleted() {
   }, 300);
 }
 
-// ---- Filtering ----
-
-function getFilteredTodos() {
-  switch (activeFilter) {
-    case 'active':
-      return todos.filter(t => !t.completed);
-    case 'completed':
-      return todos.filter(t => t.completed);
-    default:
-      return todos;
-  }
-}
-
 // ---- Rendering ----
 
 function formatTime(isoString) {
@@ -164,8 +151,30 @@ function escapeHtml(str) {
 }
 
 function render() {
-  const filtered = getFilteredTodos();
-  const activeCount = todos.filter(t => !t.completed).length;
+  let activeCount = 0;
+  let filtered;
+
+  if (activeFilter === 'all') {
+    filtered = todos;
+    for (let i = 0; i < todos.length; i++) {
+      if (!todos[i].completed) {
+        activeCount++;
+      }
+    }
+  } else {
+    filtered = [];
+    const targetCompleted = activeFilter === 'completed';
+    for (let i = 0; i < todos.length; i++) {
+      const todo = todos[i];
+      if (!todo.completed) {
+        activeCount++;
+      }
+      if (todo.completed === targetCompleted) {
+        filtered.push(todo);
+      }
+    }
+  }
+
   const totalCount = todos.length;
   const completedCount = totalCount - activeCount;
 
